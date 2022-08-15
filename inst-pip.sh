@@ -125,7 +125,7 @@ f_inst_g () {
       set -eEo pipefail     
       rm -f "${mytempdir}/get-pip.py"
       curl -sSL "${ourl}" -o "${mytempdir}/get-pip.py"
-      python $parms | return 1
+      python $parms || return 1
   fi    
    
 }
