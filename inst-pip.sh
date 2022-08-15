@@ -72,6 +72,10 @@ get_python_ints
 set -eEo pipefail
 
 [[ $(uname) -ne "Linux" ]] && exit 12
+if ! command -v python &>/dev/null;then
+   echo "The python symlink is missing."
+   exit 11
+fi   
 
 if [[ $(id -u) -eq 0 ]];then
     echo "Warning! It is not recommended to install  pip as root."
@@ -101,10 +105,29 @@ f_inst_g () {
    
    curl -sSL "${PIPURL}" -o "${mytempdir}/get-pip.py"   
    if [[ $is_pip2 == "yes" ]];then
-       python get-pip.py "pip < 21.0" &>/dev/null || return 1
+       py_maj_ver=$(python -V|awk '{print $NF}'|awk -F '.' '{print $1}')
+       if  [[ $py_maj_ver -ne 2 ]];then
+          echo "The default python is not python 2."
+          exit 1
+       fi     
+       parms="get-pip.py pip <21.0"
    else
-       python get-pip.py  &>/dev/null || return  1
+       parms="get-pip.py"
    fi      
+   set +eEo pipefail
+   
+   #Checking if the script suggests another version
+   
+   omsg=$(python $parms 2>&1 > /dev/null)
+   ourl=$(echo $omsg|awk '{print $(NF-1)}')
+   if echo $ourl|grep -q "get-pip.py";then
+   #trying the suggested version
+      set -eEo pipefail     
+      rm -f "${mytempdir}/get-pip.py"
+      curl -sSL "${ourl}" -o "${mytempdir}/get-pip.py"
+      python $parms | return 1
+  fi    
+   
 }
 
 
