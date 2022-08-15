@@ -2,6 +2,7 @@ get_python_ints () {
 	IFS=':' read -rapaths<<<"$PATH"
 
 	for path in "${paths[@]}"; do
+	    [[ ! -d "$path" ]] && continue
 		IFS=$'\n' read -r -d '' -a my_python_ints < <( find "$path" -type f -iname "python*" && printf '\0' )
 		if [ ${#my_python_ints[@]} -ne 0 ];then
 			break
