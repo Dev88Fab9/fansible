@@ -57,6 +57,9 @@ do
         h)
           f_usage
           ;;
+        *)
+          f_usage
+          ;;            
   esac
 done
 shift $((OPTIND-1))
@@ -110,22 +113,22 @@ f_inst_g () {
           echo "The default python is not python 2."
           exit 1
        fi     
-       parms="get-pip.py pip <21.0"
+       parms="${mytempdir}/get-pip.py pip <21.0"
    else
-       parms="get-pip.py"
+       parms="${mytempdir}/get-pip.py"
    fi      
-   set +eEo pipefail
+   
    
    #Checking if the script suggests another version
-   
-   omsg=$(python $parms 2>&1 > /dev/null)
-   ourl=$(echo $omsg|awk '{print $(NF-1)}')
-   if echo $ourl|grep -q "get-pip.py";then
+   set +eEo pipefail;trap - ERR;omsg="def"
+   omsg=$(set +eEo pipefail;python "$parms" 2>&1)
+   ourl=$(echo "$omsg"|awk '{print $(NF-1)}')
+   if echo "$ourl"|grep -q "get-pip.py";then
    #trying the suggested version
-      set -eEo pipefail     
+      set -eEo pipefail;trap 'f_err_h;exit 1' ERR   
       rm -f "${mytempdir}/get-pip.py"
       curl -sSL "${ourl}" -o "${mytempdir}/get-pip.py"
-      python $parms || return 1
+      python "$parms" || return 1
   fi    
    
 }
@@ -162,4 +165,7 @@ else
    ret=$?
 fi 
 
+if ! echo "$PATH"|grep -q '/usr/local/bin';then
+    echo "Warning: /usr/local/bin is not in the PATH."
+fi  
 exit $ret
