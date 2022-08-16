@@ -6,7 +6,7 @@ is_pip2=""
 f_usage () {
 
 cat << EOS
-	Install pip, pip2 oe pip3
+    Install pip, pip2 oe pip3
     USAGE:
       ${0} -s {2,3} | -o {0,2,3} [ -d ]
       
@@ -95,14 +95,13 @@ f_exit_h () {
 }
 
 
-f_err_h(){
+f_err_h () {
   printf "Script failed with exit code %d in function '%s' at line %d.\n" "$?" "${FUNCNAME[1]}" "${BASH_LINENO[0]}"
   if [[ $is_debug -ne 0 ]]; then
      echo "Please enable debugging mode for more info"
      [[ -n "${mytempdir}" ]] && rm -rf "${mytempdir}"
   fi  
 }
-
 
 f_inst_g () {
    #Install through the get-pip.py script   
@@ -119,19 +118,42 @@ f_inst_g () {
        parms="${mytempdir}/get-pip.py"
    fi      
    
+   while :
+       do
+           if [[ $is_pip2 == "no" ]];then
+              if ! command -v python3 &>/dev/null;then
+                  exit 1
+              else
+                  py_int="python3"
+                  break
+              fi 
+           fi   
+          if [[ $is_pip2 == "yes" ]];then   
+             if ! command -v python2 &>/dev/null;then
+                  if ! command -v python &>/dev/null;then
+                      exit 1
+                  else
+                      py_int="python"
+                      break
+                  fi     
+            else
+                py_int="python2"
+                break
+            fi  
+         fi 
+   done 
    
    #Checking if the script suggests another version
    set +eEo pipefail;trap - ERR;omsg="def"
-   omsg=$(set +eEo pipefail;python "$parms" 2>&1)
+   omsg=$(set +eEo pipefail;$py_int "$parms" 2>&1)
    ourl=$(echo "$omsg"|awk '{print $(NF-1)}')
    if echo "$ourl"|grep -q "get-pip.py";then
    #trying the suggested version
       set -eEo pipefail;trap 'f_err_h;exit 1' ERR   
       rm -f "${mytempdir}/get-pip.py"
       curl -sSL "${ourl}" -o "${mytempdir}/get-pip.py"
-      python "$parms" || return 1
-  fi    
-   
+      $py_int "$parms" || return 1
+  fi 
 }
 
 
