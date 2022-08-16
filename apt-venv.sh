@@ -25,11 +25,11 @@ EOS
     exit
 }
 echo 
-if [[ $# -lt 2 || $# -gt 3 ]];then  
+if [[ $# -lt 4 || $# -gt 5 ]];then  
     f_usage
 fi  
 
-while getopts dhv: OPT
+while getopts dhv:o: OPT
 do
   case "${OPT}" in
         d)
