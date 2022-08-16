@@ -6,6 +6,7 @@ is_pip2=""
 f_usage () {
 
 cat << EOS
+	Install pip, pip2 oe pip3
     USAGE:
       ${0} -s {2,3} | -o {0,2,3} [ -d ]
       
@@ -74,7 +75,7 @@ get_python_ints
 [[ $? -ne 0 ]] && exit 11
 set -eEo pipefail
 
-[[ $(uname) -ne "Linux" ]] && exit 12
+[[ $(uname) != "Linux" ]] && exit 12
 if ! command -v python &>/dev/null;then
    echo "The python symlink is missing."
    exit 11
