@@ -15,7 +15,7 @@ cat << EOS
         -o {0,2,3} [-d ] => install distro provided version (pip, pip2 or pip3)
         -d               => enable debugging
     
-      Note that -p and -o are mutually exclusive!
+      Note that -g and -o are mutually exclusive!
       
       Example:
          ${0} -d -g 2
