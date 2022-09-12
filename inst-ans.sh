@@ -98,5 +98,5 @@ fi
 echo " OK."
 
 
-source "./bin/activate dectivate" &>/dev/null || true
+deactivate &>/dev/null || true
 exit 0
