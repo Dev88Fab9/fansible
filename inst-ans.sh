@@ -3,7 +3,7 @@
 f_usage () {
 
 cat << EOS
-    Install Ansible
+    Script to install Ansible through pip
     
     USAGE:
       ${0} -i {1,2,3} -n env_name [-v] ansible_version [ -d ] 

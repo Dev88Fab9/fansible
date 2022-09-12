@@ -1,3 +1,5 @@
+#Get how many pythons we have in the PATH
+
 get_python_ints () {
 	IFS=':' read -rapaths<<<"$PATH"
 
@@ -12,9 +14,6 @@ get_python_ints () {
 	if [ ${#my_python_ints[@]} -eq 0 ];then
 		return 1
 	else
-		# for my_python_int in "${my_python_ints[@]}";do
-			# echo "${my_python_int}"
-		# done    
 		return 0
 	fi
 }
