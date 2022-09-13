@@ -31,8 +31,9 @@ systems modifications.
 Likewise the script tests/rollback/rollback.sh requires the option
 -a DESTROY in order to destroy the cluster and undo any modification.
 It is not a true rollback of course, as any other activity that might have
-occurred in the system won't be undone. If you other better rollback ways in
-place I suggest to use that, for instance, through VMWare snapshots.
+occurred in the system won't be undone. If you have any better rollback
+strategy I suggest to use that, for instance, revert to a previous VM state
+through a VMWare snapshot.
 
 
 License
