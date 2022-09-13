@@ -1,0 +1,17 @@
+---
+- block:
+  - name: install httpd
+    become: yes
+    yum:
+        name: httpd
+        state: present
+
+  - name: ensure status.conf files
+    become: yes
+    copy:
+        src: files/status.conf
+        dest: /etc/httpd/conf.d/status.conf
+  rescue:
+      - name: Rescue block (perform recovery)
+        debug:
+            msg: "Something went wrong..Please run the rollback.sh script"

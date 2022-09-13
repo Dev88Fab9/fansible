@@ -1,0 +1,24 @@
+---
+- block:
+     -  name : make sure firewalld is present
+        yum:
+            name: '{{ item }}'
+            state: present
+        with_items:
+          '{{ packages }}'
+
+     -  name: firewalld should be started
+        service:
+            name: firewalld
+            state: started
+
+     -  name: firewalld should be enabled (systemd)
+        systemd:
+            name: firewalld
+            enabled: yes
+
+  rescue:
+      - name: Rescue block (perform recovery)
+        debug:
+            msg: "Sorry. Something went wrong. Please check that \
+               1. you have correct repositories\n2. you are root"

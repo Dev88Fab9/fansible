@@ -1,0 +1,35 @@
+---
+  - name: stop and remove cluster services
+    hosts: node1
+    become: true
+
+    tasks:
+    - name: cleanup any incomplete transaction
+      command: sudo yum-complete-transaction
+
+    - name: put cluster in maintenance mode
+      ignore_errors: yes
+      command: sudo pcs property set maintenance-mode=true
+
+    - name: stop the cluster services
+      ignore_errors: yes
+      command: sudo pcs cluster stop
+
+    - name: destroy the cluster
+      ignore_errors: yes
+      command: sudo pcs cluster destroy
+
+    - name: remove pcs and pacemaker
+      ignore_errors: yes
+      yum:
+         name: "{{ item }}"
+         state: absent
+      with_items:
+                - pcs
+                - pacemaker
+
+    - name: remove hacluster user
+      ignore_errors: yes
+      user:
+         name: hacluster
+         state: absent           

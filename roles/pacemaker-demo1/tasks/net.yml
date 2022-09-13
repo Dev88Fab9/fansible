@@ -1,0 +1,48 @@
+---
+- block:
+    - name: generate temporary backup directory
+      register: tempdir
+      ignore_errors: yes
+      tempfile:
+          state: directory
+          suffix: bck
+    - name: create temporary directory
+      ignore_errors: yes
+      file:
+          path: '{{ tempdir }}'
+          state: directory
+    - name: backup hosts files
+      ignore_errors: yes
+      copy:
+          src: /etc/hosts
+          dest: "{{ tempdir }}"
+          remote_src: yes
+    - name: hosts file
+      lineinfile:
+        path: /etc/hosts
+        line: '{{ item }}'
+      with_items:
+          '{{ etchostslines }}'
+    - name : firewalld must be on
+      service:
+         name: firewalld
+         state: started
+
+    - name: allow HA
+      command: sudo firewall-cmd --permanent --add-service=high-availability
+
+    - name: reload FW
+      command: sudo firewall-cmd --reload
+
+  rescue:
+      - name: Rescue block (perform recovery)
+        debug:
+            msg: "Something went wrong..Please run the rollback.sh script"
+
+      - name: rollback hosts file
+        ignore_errors: yes
+        copy:
+            src: "{{ tempdir }}/hosts"
+            dest: /etc/hosts
+            remote_src: yes
+            force: yes

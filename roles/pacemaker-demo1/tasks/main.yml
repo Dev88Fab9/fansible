@@ -1,0 +1,7 @@
+---
+# tasks file for pacemaker-demo1
+- include_tasks: prereq.yml
+- include_tasks: net.yml
+- include_tasks: httpd.yml
+- include_tasks: inst-cl.yml
+- include_tasks: startcl.yml

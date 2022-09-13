@@ -1,0 +1,18 @@
+---
+# vars file for pacemaker-demo1
+clusterpkgs:
+   - pacemaker
+   - pcs
+clservices:
+   - corosync
+   - pacemaker
+clpass: "osboxes.org"
+cluser: hacluster
+node1: 192.168.1.66
+node2: 192.168.1.65
+etchostslines:
+    - "192.168.1.65 webnode02"
+    - "192.168.1.66 webnode01"
+packages:
+    - firewalld
+    - python-firewall

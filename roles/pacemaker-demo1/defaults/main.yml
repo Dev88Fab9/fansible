@@ -1,0 +1,3 @@
+---
+# defaults file for pacemaker-demo1
+IS_STONITH_ON: false

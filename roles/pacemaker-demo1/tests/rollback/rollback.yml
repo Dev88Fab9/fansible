@@ -1,0 +1,22 @@
+---
+  - name: rollback
+    hosts: all
+    become: true
+
+    tasks:
+        - name: remove httpd
+          ignore_errors: yes
+          yum:
+              name: httpd
+              state: absent
+
+        - name: remove status.conf
+          ignore_errors: yes
+          file:
+              path: /etc/httpd/conf.d/status.conf
+              state: absent
+
+        - name: remove FW rule
+          ignore_errors: yes
+          command: sudo firewall-cmd --permanent \
+                   --remove-service=high-availability
